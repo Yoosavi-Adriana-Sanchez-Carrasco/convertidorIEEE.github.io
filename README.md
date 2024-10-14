@@ -1,2 +1,2 @@
 # convertidorIEEE.github.io
-para la tareita
+tarea de convertidor de punto flotante IEE-754
