@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEE-754 Floaming Point Converter</title>
+
+    <style>
+        
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Tipo de fuente similar a la de la imagen */
+            background-color: #f0ecec; /* Color de fondo claro */
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24px; /* Tamaño del título */
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            text-align: center; /* Centrar el contenido */
+            padding: 10px;
+        }
+
+       
+
+        #cajaSigno{
+            background-color: #eddcc5;
+        }
+
+        #cajaExponente{
+            background-color: #cde7c3;
+        }
+        #cajaMatisa{
+            background-color: #b0d6f7; 
+        }
+
+        table {
+            margin: 0 auto;
+            background-color: #E2DAD6;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section input {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .section select {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .section button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+       
+    </style>
+</head>
+<body>
+   <div class="container">
+        <h1>Convertidor de punto flotante IEE-754</h1>
+        <div class="section">
+            <label for="decimal">Ingrese un número en base 10: </label>
+            <input placeholder="Ingre un número " type="number" step="any" id="n10" onkeydown="checkEnter(event)" >
+               
+            <label for="base">Ingrese la base: </label>
+            <select id="base">
+                <option value="2">IEE</option>
+            </select>
+            <input type="button" value="convertir" onclick="convertir_10()">
+            
+        </div>
+ 
+
+        <br><br>
+        <table>
+            <tr id="tituloTabla">
+                <th>Signo</th>
+                <th>Exponente</th>
+                <th>Mantisa</th>
+            </tr>
+
+            <tr>
+                
+                <td id="cajaSigno">
+                    <input type="checkbox" name="signo" id="signo" value="1">
+                </td>
+                
+                <td id="cajaExponente">
+                    <input type="checkbox" name="expo" id="0">
+                    <input type="checkbox" name="expo" id="1">
+                    <input type="checkbox" name="expo" id="2">
+                    <input type="checkbox" name="expo" id="3">
+                    <input type="checkbox" name="expo" id="4">
+                    <input type="checkbox" name="expo" id="5">
+                    <input type="checkbox" name="expo" id="6">
+                    <input type="checkbox" name="expo" id="7">
+                </td>
+
+                <td id="cajaMatisa">
+                    <input type="checkbox" name="Mant" id="0">
+                    <input type="checkbox" name="Mant" id="1">
+                    <input type="checkbox" name="Mant" id="2">
+                    <input type="checkbox" name="Mant" id="3">
+                    <input type="checkbox" name="Mant" id="4">
+                    <input type="checkbox" name="Mant" id="5">
+                    <input type="checkbox" name="Mant" id="6">
+                    <input type="checkbox" name="Mant" id="7">
+                    <input type="checkbox" name="Mant" id="8">
+                    <input type="checkbox" name="Mant" id="9">
+                    <input type="checkbox" name="Mant" id="10">
+                    <input type="checkbox" name="Mant" id="11">
+                    <input type="checkbox" name="Mant" id="12">
+                    <input type="checkbox" name="Mant" id="13">
+                    <input type="checkbox" name="Mant" id="14">
+                    <input type="checkbox" name="Mant" id="15">
+                    <input type="checkbox" name="Mant" id="16">
+                    <input type="checkbox" name="Mant" id="17">
+                    <input type="checkbox" name="Mant" id="18">
+                    <input type="checkbox" name="Mant" id="19">
+                    <input type="checkbox" name="Mant" id="20">
+                    <input type="checkbox" name="Mant" id="21">
+                    <input type="checkbox" name="Mant" id="22">
+                </td>
+
+            </tr>
+            <tr align="center">
+                <td class="normalLetter" id="textoSigno">-</td>
+                <td class="normalLetter" id="textoExponet">-</td>
+                <td class="normalLetter" id="textoMantissa">-</td>
+            </tr>
+
+        </table>
+        <div id="respuestaT">
+            <p>Representación Decimal: <span id="parteEntera"></span></p>
+        </div>
+       
+   </div>
+
+   <script>
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                convertir_10();
+            }
+        }
+
+        function convertir_10(){
+            //numero obtenido
+            let valor2= parseFloat(document.getElementById("n10").value);
+            let entera
+            let frac
+            let valor
+
+            if(valor2 >0){
+                entera= Math.floor(valor2);
+                frac= valor2 - entera;
+
+            }else{
+                valor=valor2*(-1);
+                entera= Math.floor(valor);
+                frac= valor - entera;
+            }
+            
+            if (valor===0){
+                document.getElementById("textoSigno").innerText = "0";
+                document.getElementById("textoExponet").innerText = "00000000";
+                checkingBoxes("00000000", 8, "expo");
+                document.getElementById("textoMantissa").innerText = "00000000000000000000000000000000";
+                checkingBoxes("00000000000000000000000000000000", 23, "Mant");
+                document.getElementById("parteEntera").innerText="0";
+                return
+            }
+
+            let sigB
+            if(valor2 >0){
+                sigB = 0;
+                document.getElementById("signo").checked = false;
+            }else{
+                sigB = 1;
+                document.getElementById("signo").checked = true;
+                
+            }
+            
+            document.getElementById("textoSigno").innerText = sigB.toString();
+
+            
+            //frac = Number(frac.toFixed(10));  
+
+            document.getElementById("parteEntera").innerText= valor2;
+            
+            let resEntero = convertBinary(entera);
+            let resFloat = convertFraccionBin(frac);
+
+
+            let mantisaBin
+            let expo
+            let shift
+            let resExpo
+            if (entera === 0) {
+                shift = resFloat.indexOf('1') + 1;
+                expo = 127 - shift;
+                mantisaBin = resFloat.slice(shift);
+                mantisaBin = mantisaBin.padEnd(23, '0');
+                resExpo = convertBinary(expo).padStart(8, '0');
+
+            } else {
+                expo = resEntero.length - 1;
+                resExpo = convertBinary(expo + 127);
+                mantisaBin = resEntero.slice(1) + resFloat;
+                mantisaBin = mantisaBin.padEnd(23, '0');
+                resExpo = convertBinary(expo+127).padStart(8, '0');
+
+            }
+            
+            //let mantisaBin =  resEntero.slice(1) + resFloat;
+            document.getElementById("textoMantissa").innerText = mantisaBin.slice(0, 23);
+            checkingBoxes(mantisaBin, 23, "Mant");
+
+
+            //let expo = resEntero.length-1;
+            //let resExpo = convertBinary(expo+127);
+            document.getElementById("textoExponet").innerText = resExpo;
+            checkingBoxes(resExpo, 8, "expo"); 
+        }
+
+         /* Función para convertir un número a binario */
+        function convertBinary(valor) {
+            let respuesta="";
+
+            while(valor>0){
+                let residuo=valor%2;
+                respuesta = residuo.toString()+respuesta;
+                valor =Math.trunc(valor/2);
+            }
+            return respuesta
+        }
+
+        function convertFraccionBin(floatPart) {
+            let result = '';
+            while (floatPart > 0 && result.length < 23) {
+                floatPart *= 2;
+                if (floatPart >= 1) {
+                    result += '1';
+                    floatPart -= 1;
+                } else {
+                    result += '0';
+                }
+            }
+            return result.padEnd(23, '0');
+            console.log(result)
+        }
+
+        function checkingBoxes(binString, size, name) {
+            let checkboxes = document.getElementsByName(name);
+            for (let i = 0; i < size; i++) {
+                checkboxes[i].checked = (binString[i] === '1');
+            }
+        }
+
+   </script>
+   
+</body>
+</html>
